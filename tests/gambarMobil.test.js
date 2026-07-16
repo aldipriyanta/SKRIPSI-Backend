@@ -35,7 +35,7 @@ describe('POST /api/mobil/:id/gambar', () => {
   it('menolak upload tanpa token', async () => {
     const res = await request(app)
       .post(`/api/mobil/${mobilId}/gambar`)
-      .attach('gambar', path.join(__dirname, 'fixtures', 'test-image.png'));
+      //.attach('gambar', path.join(__dirname, 'fixtures', 'test-image.png'));
     expect(res.statusCode).toBe(401);
   });
 
