@@ -3,7 +3,7 @@ const { tanyaCerebras } = require('../src/services/cerebrasService');
 const request = require('supertest');
 const bcrypt = require('bcryptjs');
 const app = require('../src/app');
-const { Admin, Mobil, PercakapanChatbot, PesanChatbot, LogPromptChatbot } = require('../src/models');
+const { Admin, Mobil, Merek, Kategori, PercakapanChatbot, PesanChatbot, LogPromptChatbot } = require('../src/models');
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -12,17 +12,17 @@ beforeEach(() => {
 beforeAll(async () => {
   const hashedPassword = await bcrypt.hash('rahasia123', 10);
   const admin = await Admin.create({
-    nama: 'Admin Chatbot',
-    username: 'adminchatbot',
-    password: hashedPassword,
-    email: 'adminchatbot@example.com',
+    nama: 'Admin Chatbot', username: 'adminchatbot', password: hashedPassword, email: 'adminchatbot@example.com',
   });
+
+  const merek = await Merek.create({ nama_merek: 'Toyota' });
+  const kategori = await Kategori.create({ nama_kategori: 'MPV' });
 
   await Mobil.create({
     id_admin: admin.id_admin,
     nama_mobil: 'Avanza',
-    merek: 'Toyota',
-    kategori: 'MPV',
+    id_merek: merek.id_merek,
+    id_kategori: kategori.id_kategori,
     harga: 185000000,
   });
 });

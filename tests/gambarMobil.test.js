@@ -2,7 +2,7 @@ const request = require('supertest');
 const path = require('path');
 const bcrypt = require('bcryptjs');
 const app = require('../src/app');
-const { Admin, Mobil, GambarMobil } = require('../src/models');
+const { Admin, Mobil, Merek, Kategori, GambarMobil } = require('../src/models');
 
 let token;
 let mobilId;
@@ -10,22 +10,20 @@ let mobilId;
 beforeAll(async () => {
   const hashedPassword = await bcrypt.hash('rahasia123', 10);
   await Admin.create({
-    nama: 'Admin Gambar',
-    username: 'admingambar',
-    password: hashedPassword,
-    email: 'admingambar@example.com',
+    nama: 'Admin Gambar', username: 'admingambar', password: hashedPassword, email: 'admingambar@example.com',
   });
 
-  const loginRes = await request(app)
-    .post('/api/auth/login')
-    .send({ username: 'admingambar', password: 'rahasia123' });
+  const loginRes = await request(app).post('/api/auth/login').send({ username: 'admingambar', password: 'rahasia123' });
   token = loginRes.body.token;
+
+  const merek = await Merek.create({ nama_merek: 'Toyota' });
+  const kategori = await Kategori.create({ nama_kategori: 'MPV' });
 
   const mobil = await Mobil.create({
     id_admin: 1,
     nama_mobil: 'Innova',
-    merek: 'Toyota',
-    kategori: 'MPV',
+    id_merek: merek.id_merek,
+    id_kategori: kategori.id_kategori,
     harga: 250000000,
   });
   mobilId = mobil.id_mobil;
@@ -33,9 +31,7 @@ beforeAll(async () => {
 
 describe('POST /api/mobil/:id/gambar', () => {
   it('menolak upload tanpa token', async () => {
-    const res = await request(app)
-      .post(`/api/mobil/${mobilId}/gambar`)
-      //.attach('gambar', path.join(__dirname, 'fixtures', 'test-image.png'));
+    const res = await request(app).post(`/api/mobil/${mobilId}/gambar`);
     expect(res.statusCode).toBe(401);
   });
 

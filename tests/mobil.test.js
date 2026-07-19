@@ -1,24 +1,25 @@
 const request = require('supertest');
 const bcrypt = require('bcryptjs');
 const app = require('../src/app');
-const { Admin, Mobil } = require('../src/models');
+const { Admin, Mobil, Merek, Kategori } = require('../src/models');
 
 let token;
+let merekId;
+let kategoriId;
 
 beforeAll(async () => {
   const hashedPassword = await bcrypt.hash('rahasia123', 10);
   await Admin.create({
-    nama: 'Admin Mobil',
-    username: 'adminmobil',
-    password: hashedPassword,
-    email: 'adminmobil@example.com',
+    nama: 'Admin Mobil', username: 'adminmobil', password: hashedPassword, email: 'adminmobil@example.com',
   });
 
-  const loginRes = await request(app)
-    .post('/api/auth/login')
-    .send({ username: 'adminmobil', password: 'rahasia123' });
-
+  const loginRes = await request(app).post('/api/auth/login').send({ username: 'adminmobil', password: 'rahasia123' });
   token = loginRes.body.token;
+
+  const merek = await Merek.create({ nama_merek: 'Toyota' });
+  const kategori = await Kategori.create({ nama_kategori: 'MPV' });
+  merekId = merek.id_merek;
+  kategoriId = kategori.id_kategori;
 });
 
 describe('GET /api/mobil', () => {
@@ -32,7 +33,7 @@ describe('GET /api/mobil', () => {
 describe('POST /api/mobil', () => {
   it('menolak membuat data mobil tanpa token', async () => {
     const res = await request(app).post('/api/mobil').send({
-      nama_mobil: 'Avanza', merek: 'Toyota', kategori: 'MPV', harga: 150000000,
+      nama_mobil: 'Avanza', id_merek: merekId, id_kategori: kategoriId, harga: 150000000,
     });
     expect(res.statusCode).toBe(401);
   });
@@ -50,19 +51,20 @@ describe('POST /api/mobil', () => {
       .post('/api/mobil')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        nama_mobil: 'Avanza', merek: 'Toyota', kategori: 'MPV', tipe: 'G',
+        nama_mobil: 'Avanza', id_merek: merekId, id_kategori: kategoriId, tipe: 'G',
         tahun: 2022, transmisi: 'Manual', bahan_bakar: 'Bensin',
         kilometer: 15000, harga: 185000000, deskripsi: 'Kondisi terawat',
       });
     expect(res.statusCode).toBe(201);
     expect(res.body.data.nama_mobil).toBe('Avanza');
+    expect(res.body.data.status_stok).toBe('tersedia');
   });
 });
 
 describe('GET /api/mobil/:id', () => {
   it('mengembalikan detail mobil jika ditemukan', async () => {
     const mobil = await Mobil.create({
-      id_admin: 1, nama_mobil: 'Xenia', merek: 'Daihatsu', kategori: 'MPV', harga: 140000000,
+      id_admin: 1, nama_mobil: 'Xenia', id_merek: merekId, id_kategori: kategoriId, harga: 140000000,
     });
     const res = await request(app).get(`/api/mobil/${mobil.id_mobil}`);
     expect(res.statusCode).toBe(200);
@@ -78,7 +80,7 @@ describe('GET /api/mobil/:id', () => {
 describe('PUT /api/mobil/:id', () => {
   it('berhasil memperbarui data mobil dengan token yang valid', async () => {
     const mobil = await Mobil.create({
-      id_admin: 1, nama_mobil: 'Brio', merek: 'Honda', kategori: 'Hatchback', harga: 130000000,
+      id_admin: 1, nama_mobil: 'Brio', id_merek: merekId, id_kategori: kategoriId, harga: 130000000,
     });
     const res = await request(app)
       .put(`/api/mobil/${mobil.id_mobil}`)
@@ -92,7 +94,7 @@ describe('PUT /api/mobil/:id', () => {
 describe('DELETE /api/mobil/:id', () => {
   it('berhasil menghapus data mobil dengan token yang valid', async () => {
     const mobil = await Mobil.create({
-      id_admin: 1, nama_mobil: 'Ayla', merek: 'Daihatsu', kategori: 'City Car', harga: 120000000,
+      id_admin: 1, nama_mobil: 'Ayla', id_merek: merekId, id_kategori: kategoriId, harga: 120000000,
     });
     const res = await request(app)
       .delete(`/api/mobil/${mobil.id_mobil}`)
