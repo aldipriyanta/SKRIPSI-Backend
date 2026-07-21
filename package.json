@@ -7,7 +7,8 @@
     "dev": "nodemon src/server.js",
     "test": "cross-env NODE_ENV=test jest --runInBand",
     "test:watch": "cross-env NODE_ENV=test jest --watch --runInBand",
-    "seed": "node src/seeders/adminSeeder.js"
+    "seed": "node src/seeders/adminSeeder.js",
+    "seed:mobil": "node src/seeders/mobilSeeder.js"
   },
   "keywords": [],
   "author": "",
