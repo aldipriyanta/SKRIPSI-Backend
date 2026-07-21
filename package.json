@@ -10,6 +10,7 @@
     "seed": "node src/seeders/adminSeeder.js",
     "seed:mobil": "node src/seeders/mobilSeeder.js"
   },
+  "engines": {"node": "v20.13.1"},
   "keywords": [],
   "author": "",
   "license": "ISC",
