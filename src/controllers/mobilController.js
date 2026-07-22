@@ -6,7 +6,10 @@ const includeRelasi = [
 ];
 
 async function getAll(req, res) {
-  const mobil = await Mobil.findAll({ include: includeRelasi });
+  const mobil = await Mobil.findAll({
+    include: includeRelasi,
+    order: [['id_mobil', 'DESC']],
+  });
   return res.status(200).json({ data: mobil });
 }
 
