@@ -3,7 +3,7 @@ const Admin = require('./admin');
 const Merek = require('./merek');
 const Kategori = require('./kategori');
 const Mobil = require('./mobil');
-const GambarMobil = require('./gambarMobil');
+const GambarMobil = require('./gambarmobil');
 
 Admin.hasMany(Mobil, { foreignKey: 'id_admin' });
 Mobil.belongsTo(Admin, { foreignKey: 'id_admin' });
