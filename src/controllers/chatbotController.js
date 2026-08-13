@@ -28,6 +28,7 @@ async function chat(req, res) {
 4. Untuk REKOMENDASI: pilih maksimal 2-3 mobil paling relevan dari daftar, sebutkan alasannya dalam 1 kalimat singkat per mobil.
 5. Untuk PERBANDINGAN harga sepadan: bandingkan mobil dalam rentang harga 15% dari yang dibicarakan, hanya dari field yang tersedia di atas.
 6. FORMAT JAWABAN: maksimal 4-6 kalimat atau poin singkat. Jangan gunakan tabel markdown, heading, atau emoji.
+7. Kalau customer meminta SATU mobil dengan kombinasi kriteria tertentu (contoh: "paling murah dan tahun paling baru", "termurah tapi kilometer paling rendah"), kamu WAJIB memilih dan menyebutkan HANYA SATU mobil sebagai jawaban akhir, bukan beberapa pilihan terpisah. Cari mobil yang paling mendekati SEMUA kriteria yang diminta secara bersamaan (bukan mobil terbaik di satu kriteria lalu mobil terbaik di kriteria lain secara terpisah). Kalau tidak ada satupun mobil yang sempurna memenuhi semua kriteria, tetap pilih SATU mobil dengan kombinasi paling mendekati, lalu jelaskan secara singkat kompromi apa yang terjadi (misal: "ini yang termurah, walau tahunnya bukan yang termuda, karena tidak ada mobil yang termurah sekaligus termuda").
 
 Data stok mobil yang tersedia saat ini:
 ${konteksMobil || 'Tidak ada mobil yang tersedia saat ini.'}
