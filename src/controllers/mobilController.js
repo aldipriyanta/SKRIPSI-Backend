@@ -1,8 +1,9 @@
-const { Mobil, Merek, Kategori } = require('../models');
+const { Mobil, Merek, Kategori, GambarMobil } = require('../models');
 
 const includeRelasi = [
   { model: Merek, attributes: ['id_merek', 'nama_merek'] },
   { model: Kategori, attributes: ['id_kategori', 'nama_kategori'] },
+  { model: GambarMobil, attributes: ['id_gambar', 'url_gambar', 'keterangan'] }
 ];
 
 async function getAll(req, res) {
